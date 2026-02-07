@@ -1,0 +1,51 @@
+# 配置文件示例
+# 复制此文件为 config.toml 并填入你的实际配置
+
+[server]
+# HTTP 服务器端口
+port = "3006"
+
+# 监听地址（留空表示监听所有接口）
+# host = "localhost"
+
+[gateway]
+# Gateway WebSocket URL
+url = "ws://127.0.0.1:18789"
+
+# 认证 Token（必填）
+# 获取方式：从你的 OpenClaw Gateway 配置中获取
+token = "YOUR-TOKEN-HERE"
+
+# 连接超时（秒）
+timeout = 30
+
+[client]
+# 客户端标识（通常不需要修改）
+id = "webchat-ui"
+version = "1.0.0"
+platform = "web"
+mode = "webchat"
+
+[chat]
+# 默认会话 Key
+sessionKey = "global"
+
+# 思考模式：auto（自动）/ always（总是）/ never（从不）
+thinking = "auto"
+
+# 是否实时投递
+deliver = true
+
+[security]
+# CORS 允许的源（* 表示允许所有）
+# corsOrigins = ["*"]
+
+# 启用 HTTPS（生产环境建议启用）
+# enableTLS = false
+
+[log]
+# 日志级别：debug / info / warn / error
+level = "info"
+
+# 日志文件路径（留空则输出到控制台）
+# file = "clawchat.log"
