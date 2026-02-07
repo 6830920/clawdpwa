@@ -1,5 +1,11 @@
 # ClawChat Go Server - Git Ignore
 
+# Node.js / npm
+node_modules/
+gateway-plugin/node_modules/
+package-lock.json
+gateway-plugin/package-lock.json
+
 # 旧版本目录（被锁定无法删除）
 pwa-versions/
 pwa-client/
