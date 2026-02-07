@@ -3,9 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="ClawChat - Go 版本服务器">
+    <meta name="description" content="ClawChat - AI 聊天助手">
     <meta name="theme-color" content="#06b6d4">
-    <title>ClawChat - Go 版本</title>
+
+    <!-- PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ClawChat">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
+
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/manifest.json">
+
+    <title>ClawChat</title>
     <!-- Marked.js for Markdown rendering -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
@@ -43,16 +53,25 @@
             font-size: 14px;
         }
         #status {
-            display: inline-block;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
-            background: rgba(255,255,255,0.2);
-            margin-top: 10px;
+            display: none; /* 隐藏文字状态 */
         }
-        #status.connected { background: #22c55e; }
-        #status.disconnected { background: #ef4444; }
+        .status-icon {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 10px;
+            background: #ef4444;
+            animation: pulse 2s infinite;
+        }
+        .status-icon.connected {
+            background: #22c55e;
+            animation: none;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
         .messages {
             height: 500px;
             overflow-y: auto;
@@ -133,6 +152,52 @@
             padding: 8px;
         }
 
+        /* 正在输入指示器 */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 12px 16px;
+            background: white;
+            border: 1px solid #cffafe;
+            border-radius: 20px;
+            border-bottom-left-radius: 6px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            width: fit-content;
+            animation: slideIn 0.3s ease-out;
+        }
+        .typing-indicator .dot {
+            width: 8px;
+            height: 8px;
+            background: #06b6d4;
+            border-radius: 50%;
+            animation: typingBounce 1.4s infinite ease-in-out;
+        }
+        .typing-indicator .dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+        .typing-indicator .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .typing-indicator .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        @keyframes typingBounce {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.7;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+
+        /* 正在输入的用户消息样式 */
+        .message.user.typing {
+            opacity: 0.6;
+        }
+
         /* Markdown 样式 */
         .message-content {
             line-height: 1.6;
@@ -205,14 +270,75 @@
             background: rgba(0,0,0,0.05);
             font-weight: 600;
         }
+
+        /* 响应式设计 - 手机模式优化 */
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+            .chat-container {
+                border-radius: 0;
+                height: 100vh;
+                max-width: 100%;
+            }
+            .header {
+                padding: 16px;
+            }
+            .header h1 {
+                font-size: 22px;
+            }
+            .messages {
+                padding: 12px;
+                height: calc(100vh - 180px); /* 动态计算高度 */
+            }
+            .message-content {
+                max-width: 90%; /* 手机模式下消息更宽 */
+                padding: 12px 14px;
+                font-size: 15px;
+            }
+            .input-area {
+                padding: 12px;
+            }
+            .input-form {
+                gap: 8px;
+            }
+            .input-form input {
+                padding: 12px;
+                font-size: 16px; /* 防止 iOS 自动缩放 */
+            }
+            .input-form button {
+                padding: 12px 20px;
+                font-size: 16px;
+            }
+        }
+
+        /* 超窄屏幕优化 */
+        @media (max-width: 480px) {
+            .messages {
+                padding: 8px;
+            }
+            .message-content {
+                max-width: 95%; /* 充满屏幕 */
+                padding: 10px 12px;
+            }
+            .message.user .message-content {
+                border-bottom-right-radius: 4px;
+                border-bottom-left-radius: 12px;
+            }
+            .message.assistant .message-content {
+                border-bottom-left-radius: 4px;
+                border-bottom-right-radius: 12px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="chat-container">
         <div class="header">
-            <h1>💬 ClawChat - Go 版本</h1>
-            <p>使用 Go HTTP 服务器提供静态文件服务</p>
-            <div id="status" class="disconnected">未连接</div>
+            <h1>
+                💬 ClawChat
+                <span id="status-icon" class="status-icon"></span>
+            </h1>
         </div>
 
         <div id="messages" class="messages">
@@ -239,7 +365,11 @@
         let assistantMessageId = null;
 
         function connect() {
-            ws = new WebSocket('ws://127.0.0.1:18789');
+            // 连接到代理服务器（使用当前页面的协议和主机）
+            const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${wsProtocol}//${window.location.host}/ws`;
+            console.log('[WebSocket] Connecting to proxy:', wsUrl);
+            ws = new WebSocket(wsUrl);
 
             ws.onopen = () => {
                 console.log('[Go Server] Connected to Gateway');
@@ -264,8 +394,7 @@
 
                 // 连接成功
                 if (msg.type === 'res' && msg.id === '1' && msg.ok) {
-                    document.getElementById('status').textContent = '已连接';
-                    document.getElementById('status').className = 'connected';
+                    document.getElementById('status-icon').className = 'status-icon connected';
                     document.getElementById('messageInput').disabled = false;
                     document.getElementById('sendBtn').disabled = false;
                     document.getElementById('messages').innerHTML = '<div class="system-message">正在加载历史消息...</div>';
@@ -314,6 +443,9 @@
 
                 // 助手流式消息
                 if (msg.type === 'event' && msg.event === 'agent' && msg.payload.stream === 'assistant') {
+                    // 隐藏正在输入指示器（第一次收到消息时）
+                    hideTypingIndicator();
+
                     const text = msg.payload.data.text;
                     updateAssistantMessage(text);
                 }
@@ -321,12 +453,13 @@
                 // 聊天完成
                 if (msg.type === 'event' && msg.event === 'chat' && msg.payload.state === 'final') {
                     assistantMessageId = null;
+                    // 确保隐藏指示器
+                    hideTypingIndicator();
                 }
             };
 
             ws.onclose = () => {
-                document.getElementById('status').textContent = '未连接';
-                document.getElementById('status').className = 'disconnected';
+                document.getElementById('status-icon').className = 'status-icon';
                 document.getElementById('messageInput').disabled = true;
                 document.getElementById('sendBtn').disabled = true;
                 setTimeout(connect, 3000);
@@ -337,6 +470,37 @@
             const frame = { type: 'req', id: String(++seq), ...data };
             ws.send(JSON.stringify(frame));
             console.log('[Send]', data.method || data.event || 'unknown');
+        }
+
+        // 显示正在输入指示器
+        function showTypingIndicator() {
+            const messagesDiv = document.getElementById('messages');
+
+            // 移除旧的指示器（如果存在）
+            hideTypingIndicator();
+
+            // 创建新的指示器
+            const indicator = document.createElement('div');
+            indicator.className = 'message assistant typing-indicator-message';
+            indicator.id = 'typing-indicator';
+            indicator.innerHTML = `
+                <div class="typing-indicator">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            `;
+
+            messagesDiv.appendChild(indicator);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // 隐藏正在输入指示器
+        function hideTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) {
+                indicator.remove();
+            }
         }
 
         // 加载历史消息
@@ -407,6 +571,10 @@
             const message = input.value.trim();
             if (message) {
                 addMessage('user', message);
+
+                // 显示正在输入指示器
+                showTypingIndicator();
+
                 assistantMessageId = 'assistant-' + Date.now();
                 send({
                     method: 'chat.send',
@@ -432,6 +600,19 @@
 
         // 启动连接
         connect();
+
+        // 注册 Service Worker (PWA)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('[SW] Service Worker registered:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('[SW] Service Worker registration failed:', error);
+                    });
+            });
+        }
     </script>
 </body>
 </html>

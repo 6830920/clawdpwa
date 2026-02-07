@@ -45,7 +45,7 @@ pwa-versions/go-version/
 
 ### 方式 1: 纯命令行（旧方式）
 ```bash
-./clawchat.exe -p 3006 -g ws://127.0.0.1:18789 -t YOUR-TOKEN
+./clawchat.exe -p 36006 -g ws://127.0.0.1:18789 -t YOUR-TOKEN
 ```
 ❌ 命令太长
 ❌ Token 容易泄露
@@ -56,7 +56,7 @@ pwa-versions/go-version/
 # 1. 创建配置文件
 cat > config.toml << EOF
 [server]
-port = "3006"
+port = "36006"
 
 [gateway]
 url = "ws://127.0.0.1:18789"
@@ -91,7 +91,7 @@ EOF
 
 ```toml
 [server]
-port = "3006"
+port = "36006"
 
 [gateway]
 url = "ws://127.0.0.1:18789"

@@ -29,10 +29,10 @@ nano config.toml     # Linux/macOS
 
 ```bash
 # 完整参数
-./clawchat.exe -port 3006 -gateway ws://127.0.0.1:18789 -token YOUR-TOKEN
+./clawchat.exe -port 36006 -gateway ws://127.0.0.1:18789 -token YOUR-TOKEN
 
 # 简写
-./clawchat.exe -p 3006 -g ws://127.0.0.1:18789 -t YOUR-TOKEN
+./clawchat.exe -p 36006 -g ws://127.0.0.1:18789 -t YOUR-TOKEN
 ```
 
 ### 方式 3: 混合使用（推荐用于测试）
@@ -51,7 +51,7 @@ nano config.toml     # Linux/macOS
 
 ```toml
 [server]
-port = "3006"              # HTTP 服务端口
+port = "36006"              # HTTP 服务端口
 # host = "localhost"       # 监听地址（可选）
 
 [gateway]
@@ -86,7 +86,7 @@ level = "info"             # 日志级别: debug/info/warn/error
 创建 `config.dev.toml`:
 ```toml
 [server]
-port = "3006"
+port = "36006"
 
 [gateway]
 url = "ws://127.0.0.1:18789"
@@ -164,7 +164,7 @@ file = "/var/log/clawchat.log"
 ./clawchat.exe
 
 # 或直接指定所有参数
-./clawchat.exe -p 3006 -g ws://127.0.0.1:18789 -t YOUR-TOKEN
+./clawchat.exe -p 36006 -g ws://127.0.0.1:18789 -t YOUR-TOKEN
 ```
 
 ### 场景 2: 快速测试不同 Gateway
@@ -204,7 +204,7 @@ docker run -e GATEWAY_TOKEN=xxx -e GATEWAY_URL=ws://... clawchat
 
 ```bash
 # 访问配置 API
-curl http://localhost:3006/api/config
+curl http://localhost:36006/api/config
 ```
 
 返回示例:
@@ -219,7 +219,7 @@ curl http://localhost:3006/api/config
 ### 健康检查
 
 ```bash
-curl http://localhost:3006/api/health
+curl http://localhost:36006/api/health
 ```
 
 返回示例:
@@ -278,7 +278,7 @@ chmod 644 config.toml
 
 ### 之前（纯命令行）
 ```bash
-./clawchat.exe -p 3006 -g ws://127.0.0.1:18789 -t YOUR-TOKEN
+./clawchat.exe -p 36006 -g ws://127.0.0.1:18789 -t YOUR-TOKEN
 ```
 
 ### 现在（配置文件）
@@ -286,7 +286,7 @@ chmod 644 config.toml
 # 1. 创建 config.toml
 cat > config.toml << EOF
 [server]
-port = "3006"
+port = "36006"
 
 [gateway]
 url = "ws://127.0.0.1:18789"

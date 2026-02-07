@@ -3,7 +3,7 @@
 
 [server]
 # HTTP 服务器端口
-port = "3006"
+port = "36006"
 
 # 监听地址（留空表示监听所有接口）
 # host = "localhost"

@@ -49,7 +49,7 @@
 │  ┌─────────────────────────────────────────────────────────────┐   │
 │  │  index.html (前端代码)                                       │   │
 │  │                                                             │   │
-│  │  const ws = new WebSocket('ws://localhost:3006/ws');       │   │
+│  │  const ws = new WebSocket('ws://localhost:36006/ws');       │   │
 │  │  // 连接到 Go 后端，不需要 token！                           │   │
 │  │  ws.send({                                                  │   │
 │  │    method: 'chat.send',                                     │   │
@@ -138,7 +138,7 @@ ws.send(JSON.stringify({
 
 ```javascript
 // 浏览器源代码（view-source）
-const ws = new WebSocket('ws://localhost:3006/ws');
+const ws = new WebSocket('ws://localhost:36006/ws');
 ws.send(JSON.stringify({
   method: 'chat.send',
   params: {
@@ -151,7 +151,7 @@ ws.send(JSON.stringify({
 **检查方式**：
 1. 打开浏览器开发者工具（F12）
 2. 查看 Network 标签
-3. 找到 WebSocket 连接（ws://localhost:3006/ws）
+3. 找到 WebSocket 连接（ws://localhost:36006/ws）
 4. 查看发送的消息 → **只有消息内容，没有 token！**
 
 Token 在哪里？

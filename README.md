@@ -44,7 +44,7 @@ clawchat.exe
 ./clawchat
 ```
 
-访问：http://localhost:3006/
+访问：http://localhost:36006/
 
 ## 📋 配置方式
 
@@ -54,7 +54,7 @@ clawchat.exe
 
 ```toml
 [server]
-port = "3006"
+port = "36006"
 
 [gateway]
 url = "ws://127.0.0.1:18789"
@@ -75,7 +75,7 @@ deliver = true
 ### 方式 2: 命令行参数
 
 ```bash
-./clawchat.exe -p 3006 -g ws://127.0.0.1:18789 -t YOUR-TOKEN
+./clawchat.exe -p 36006 -g ws://127.0.0.1:18789 -t YOUR-TOKEN
 ```
 
 ### 方式 3: 混合使用
@@ -176,7 +176,7 @@ GOOS=darwin GOARCH=amd64 go build -o clawchat-mac main.go
 go run main.go
 
 # 指定端口
-go run main.go -p 3006
+go run main.go -p 36006
 
 # 使用配置文件
 go run main.go -c config.dev.toml
@@ -222,7 +222,7 @@ go build -o clawchat.exe main.go
 ./clawchat.exe -c /path/to/config.toml
 
 # 查看加载的配置
-curl http://localhost:3006/api/config
+curl http://localhost:36006/api/config
 ```
 
 ## 📝 更新日志

@@ -35,7 +35,7 @@ pwa-versions/go-version/
 ./clawchat.exe
 ```
 
-访问: http://localhost:3006/
+访问: http://localhost:36006/
 
 ### 2. 自定义端口
 
@@ -68,7 +68,7 @@ pwa-versions/go-version/
 | 命令 | 说明 |
 |------|------|
 | `./clawchat.exe` | 使用默认配置启动 |
-| `./clawchat.exe -p 3006` | 指定端口 |
+| `./clawchat.exe -p 36006` | 指定端口 |
 | `./clawchat.exe -g ws://IP:18789` | 指定 Gateway |
 | `./clawchat.exe -v` | 查看版本 |
 | `./clawchat.exe -h` | 查看帮助 |
@@ -85,10 +85,10 @@ pwa-versions/go-version/
 
 ```bash
 # 查看当前配置
-curl http://localhost:3006/api/config
+curl http://localhost:36006/api/config
 
 # 健康检查
-curl http://localhost:3006/api/health
+curl http://localhost:36006/api/health
 ```
 
 **返回示例:**
@@ -112,7 +112,7 @@ curl http://localhost:3006/api/health
 
 双击运行对应的 `.bat` 文件：
 
-- `start-local.bat` - 本地开发（端口 3006）
+- `start-local.bat` - 本地开发（端口 36006）
 - `start-remote.bat` - 远程 Gateway（端口 8080）
 - `start-prod.bat` - 生产环境（端口 80）
 
@@ -144,7 +144,7 @@ go build -o clawchat-linux main.go
 ### 场景 1: 本地开发
 
 ```bash
-./clawchat.exe -p 3006 -g ws://127.0.0.1:18789
+./clawchat.exe -p 36006 -g ws://127.0.0.1:18789
 ```
 
 ### 场景 2: 远程 Gateway

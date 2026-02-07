@@ -31,7 +31,7 @@
 │  浏览器前端      │              │   Go 后端         │         │  OpenClaw        │
 │                 │              │  (Proxy Server)  │         │  Gateway         │
 │  index.html     │──WebSocket──▶│                  │─Token──▶│  :18789          │
-│                 │  (无token)   │  :3006           │         │                  │
+│                 │  (无token)   │  :36006           │         │                  │
 │  WebSocket      │              │  WebSocket 代理  │         │  认证: token     │
 │  Client         │◀──WebSocket──│                  │◀───────│                  │
 └─────────────────┘              └──────────────────┘         └──────────────────┘
@@ -202,7 +202,7 @@ ws.onopen = () => {
 
 ```javascript
 // 前端只连接到 Go 后端（不需要 token！）
-const ws = new WebSocket('ws://localhost:3006/ws');
+const ws = new WebSocket('ws://localhost:36006/ws');
 
 // 前端直接发送聊天消息（不需要认证）
 ws.onopen = () => {
@@ -227,7 +227,7 @@ ws.onmessage = (event) => {
 **关键变化**：
 - ✅ 前端不知道 token
 - ✅ 前端不需要发送认证消息
-- ✅ 前端只知道连接到 `ws://localhost:3006/ws`
+- ✅ 前端只知道连接到 `ws://localhost:36006/ws`
 
 ---
 
@@ -243,7 +243,7 @@ Sent: {"type":"req","method":"connect","params":{"auth":{"token":"ABC123..."}}}
          ↑ Token 暴露！
 
 # 现在：
-WebSocket URL: ws://localhost:3006/ws
+WebSocket URL: ws://localhost:36006/ws
 Sent: {"method":"chat.send","params":{"message":"Hello"}}
          ↑ 没有 token！
 ```
@@ -310,8 +310,8 @@ clawchat.exe -g ws://gateway-server:18789 -t TOKEN
 clawchat.exe -mode proxy -g ws://gateway-server:18789 -t TOKEN
 ```
 
-前端访问：`http://localhost:3006/`
-- 前端连接到：`ws://localhost:3006/ws`
+前端访问：`http://localhost:36006/`
+- 前端连接到：`ws://localhost:36006/ws`
 - 后端连接到：`ws://gateway-server:18789`（带 token）
 
 ---
